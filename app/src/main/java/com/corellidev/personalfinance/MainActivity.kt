@@ -7,13 +7,22 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var expensesRepository: ExpensesRepository
     lateinit var listAdapter: ExpensesListAdapter
+    companion object {
+        lateinit var mainActivityComponent: MainActivityComponent
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        mainActivityComponent = DaggerMainActivityComponent.builder()
+                .build()
+        mainActivityComponent.inject(this)
         setSupportActionBar(toolbar)
 
         with (expenses_list) {
@@ -21,6 +30,7 @@ class MainActivity : AppCompatActivity() {
             layoutManager = LinearLayoutManager(this@MainActivity)
             listAdapter = ExpensesListAdapter()
             adapter = listAdapter
+            listAdapter.setContent(expensesRepository.expenses)
         }
 
         fab.setOnClickListener { view ->

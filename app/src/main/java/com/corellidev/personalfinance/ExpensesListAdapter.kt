@@ -15,16 +15,7 @@ import java.util.*
 
 class ExpensesListAdapter : Adapter<ExpensesListAdapter.ViewHolder>() {
 
-    private val items: MutableList<ExpenseModel>
-
-    init {
-// TODO replace mocked data with real ones
-        items = ArrayList()
-        items.add(ExpenseModel("expeeeeeeeeeeeeeeeeense 1", 12.5, "food", Date().getTime() - 6000000))
-        items.add(ExpenseModel("expense 2", 123.5, "car", Date().getTime() - 1000000))
-        items.add(ExpenseModel("expense 3", 222.5, "food", Date().getTime() - 16000000))
-        items.add(ExpenseModel("expense 4", 125.0, "utilities", Date().getTime() - 63000000))
-    }
+    private var items: MutableList<ExpenseModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent?.context)
@@ -40,6 +31,11 @@ class ExpensesListAdapter : Adapter<ExpensesListAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    fun setContent(newItems: MutableList<ExpenseModel>) {
+        items = newItems
+        notifyDataSetChanged()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
