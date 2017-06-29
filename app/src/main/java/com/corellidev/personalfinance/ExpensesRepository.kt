@@ -1,5 +1,6 @@
 package com.corellidev.personalfinance
 
+import io.reactivex.Observable
 import java.util.*
 
 /**
@@ -7,16 +8,17 @@ import java.util.*
  */
 
 class ExpensesRepository {
+    var expensesService: ExpenseServiceDelegate
 
-    val expenses: MutableList<ExpenseModel> = mutableListOf(
-            ExpenseModel("expeeeeeeeeeeeeeeeeense 1", 12.5, "food", Date().getTime() - 6000000),
-            ExpenseModel("new expense :) 2", 123.5, "car", Date().getTime() - 1000000),
-            ExpenseModel("expense 3", 222.5, "food", Date().getTime() - 16000000),
-            ExpenseModel("expense 4", 125.0, "utilities", Date().getTime() - 63000000)
-    )
+    constructor(expensesService: ExpenseServiceDelegate) {
+        this.expensesService = expensesService
+    }
 
-    fun getAllExpenses(): List<ExpenseModel> {
-        return expenses
+    //TODO local storing
+    val expenses: MutableList<ExpenseModel> = mutableListOf()
+
+    fun getAllExpenses(): Observable<List<ExpenseModel>> {
+        return expensesService.getAllExpenses()
     }
 
     fun addExpense(expense: ExpenseModel) {

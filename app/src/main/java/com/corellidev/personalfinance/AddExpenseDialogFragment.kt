@@ -29,7 +29,7 @@ class AddExpenseDialogFragment : DialogFragment() {
                     val name = nameInput.text.toString()
                     val value = valueInput.text.toString()
                     val category = categoryInput.text.toString()
-                    val expense = ExpenseModel(name, value.toDouble(), category, Date().time)
+                    val expense = ExpenseModel(1, name, value.toDouble(), category, Date().time)
                     Log.d("MyTag", "expense = " + expense)
                 }
                 .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
