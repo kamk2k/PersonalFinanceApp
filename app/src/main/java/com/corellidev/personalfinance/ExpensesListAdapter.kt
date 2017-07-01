@@ -15,7 +15,7 @@ import java.util.*
 
 class ExpensesListAdapter : Adapter<ExpensesListAdapter.ViewHolder>() {
 
-    private var items: MutableList<ExpenseModel> = ArrayList()
+    var items: MutableList<ExpenseModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent?.context)

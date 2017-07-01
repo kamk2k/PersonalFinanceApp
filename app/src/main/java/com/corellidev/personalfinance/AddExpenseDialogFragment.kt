@@ -15,7 +15,13 @@ import java.util.*
 
 class AddExpenseDialogFragment : DialogFragment() {
 
+    var addClickListener: AddClickListener? = null
+
     val TAG = "AddExpenseDialogFragment"
+
+    interface AddClickListener {
+        fun onAddClick(expense: ExpenseModel)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = activity.layoutInflater.inflate(R.layout.add_expense_dialog, null)
@@ -29,8 +35,9 @@ class AddExpenseDialogFragment : DialogFragment() {
                     val name = nameInput.text.toString()
                     val value = valueInput.text.toString()
                     val category = categoryInput.text.toString()
-                    val expense = ExpenseModel(1, name, value.toDouble(), category, Date().time)
+                    val expense = ExpenseModel(-1, name, value.toDouble(), category, Date().time)
                     Log.d("MyTag", "expense = " + expense)
+                    addClickListener?.onAddClick(expense)
                 }
                 .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
                     dialogInterface.cancel()

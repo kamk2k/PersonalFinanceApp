@@ -12,7 +12,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListener {
+
     @Inject
     lateinit var expensesRepository: ExpensesRepository
     lateinit var listAdapter: ExpensesListAdapter
@@ -49,8 +50,14 @@ class MainActivity : AppCompatActivity() {
 
         fab.setOnClickListener { view ->
             val addExpenseDialogFragment = AddExpenseDialogFragment()
+            addExpenseDialogFragment.addClickListener = this
             addExpenseDialogFragment.show(supportFragmentManager, addExpenseDialogFragment.TAG)
         }
+    }
+
+    override fun onAddClick(expense: ExpenseModel) {
+        listAdapter.items.add(expense)
+        expensesRepository.addExpense(expense)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
