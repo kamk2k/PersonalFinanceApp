@@ -1,19 +1,27 @@
 package com.corellidev.personalfinance
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListener {
 
+class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListener,
+        GoogleApiClient.OnConnectionFailedListener {
+    private val RC_SIGN_IN: Int = 9003
     @Inject
     lateinit var expensesRepository: ExpensesRepository
     lateinit var listAdapter: ExpensesListAdapter
@@ -30,6 +38,8 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
                 .build()
         mainActivityComponent.inject(this)
         setSupportActionBar(toolbar)
+
+        setGoogleSignIn()
 
         with (expenses_list) {
             setHasFixedSize(true)
@@ -73,6 +83,45 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun setGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .build()
+        val mGoogleApiClient = GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build()
+        sign_in_button.setOnClickListener({ view ->
+            val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
+            startActivityForResult(signInIntent, RC_SIGN_IN)
+        })
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            handleSignInResult(result)
+        }
+    }
+
+    private fun handleSignInResult(result: GoogleSignInResult) {
+        Log.d("MyTag", "handleSignInResult:" + result.isSuccess + " tokenid = " + result.signInAccount?.idToken
+        + " email = " + result.signInAccount?.email)
+        if (result.isSuccess) {
+            // Signed in successfully, show authenticated UI.
+        } else {
+            // Signed out, show unauthenticated UI.
         }
     }
 }
