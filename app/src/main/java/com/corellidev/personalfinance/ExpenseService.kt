@@ -3,27 +3,28 @@ package com.corellidev.personalfinance
 import android.content.Context
 import com.google.gson.GsonBuilder
 import io.reactivex.Observable
+import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
-import okhttp3.OkHttpClient
-
 
 
 /**
  * Created by Kamil on 2017-06-28.
  */
+const val GOOGLE_TOKEN_HEADER_NAME: String = "Google-Token"
 
 interface  ExpenseService{
     @GET("/all")
-    fun getAllExpenses(): Observable<List<ExpenseModel>>;
+    fun getAllExpenses(@Header(GOOGLE_TOKEN_HEADER_NAME) token: String?): Observable<List<ExpenseModel>>;
 
     @POST("/add")
-    fun addExpense(@Body expenseModel: ExpenseModel): Observable<ExpenseModel>
+    fun addExpense(@Header(GOOGLE_TOKEN_HEADER_NAME) token: String?, @Body expenseModel: ExpenseModel): Observable<ExpenseModel>
 }
 
 class ExpenseServiceDelegate(context: Context) {
@@ -40,11 +41,11 @@ class ExpenseServiceDelegate(context: Context) {
 
     val expensesService: ExpenseService = retrofit.create(ExpenseService::class.java)
 
-    fun getAllExpenses(): Observable<List<ExpenseModel>> {
-        return expensesService.getAllExpenses();
+    fun getAllExpenses(token: String?): Observable<List<ExpenseModel>> {
+        return expensesService.getAllExpenses(token);
     }
 
-    fun addExpense(expenseModel: ExpenseModel): Observable<ExpenseModel> {
-        return expensesService.addExpense(expenseModel)
+    fun addExpense(token: String?, expenseModel: ExpenseModel): Observable<ExpenseModel> {
+        return expensesService.addExpense(token, expenseModel)
     }
 }

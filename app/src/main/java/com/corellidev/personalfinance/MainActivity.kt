@@ -88,8 +88,8 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
 
     private fun setGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.web_app_client_id))
                 .requestEmail()
-                .requestIdToken(getString(R.string.default_web_client_id))
                 .build()
         val mGoogleApiClient = GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
@@ -119,9 +119,10 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         Log.d("MyTag", "handleSignInResult:" + result.isSuccess + " tokenid = " + result.signInAccount?.idToken
         + " email = " + result.signInAccount?.email)
         if (result.isSuccess) {
-            // Signed in successfully, show authenticated UI.
+            Log.d("MyTag", "success")
+            expensesRepository.token = result.signInAccount?.idToken
         } else {
-            // Signed out, show unauthenticated UI.
+            Log.d("MyTag", "failure ")
         }
     }
 }
