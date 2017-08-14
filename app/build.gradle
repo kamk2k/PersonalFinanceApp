@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'realm-android'
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -56,6 +58,8 @@ dependencies {
 
     compile 'com.google.firebase:firebase-auth:11.0.2'
     compile 'com.google.android.gms:play-services-auth:11.0.2'
+
+    compile 'com.github.vicpinm:krealmextensions:1.1.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
