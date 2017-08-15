@@ -63,7 +63,8 @@ class AddExpenseDialogFragment : DialogFragment() {
                     var categoryName: String
                     if (newCategoryInput.visibility == View.VISIBLE) {
                         categoryName = newCategoryInput.text.toString()
-                        categoriesRepository.addCategory(CategoryModel(categoryName, Color.CYAN))
+                        categoriesRepository.addCategory(CategoryModel(categoryName,
+                                CategoryModel.ColorsManager.getNextColor(context)))
                     } else {
                         categoryName = (categorySpinner.selectedItem as CategoryModel).name
                     }
@@ -107,6 +108,7 @@ class CategoriesAdapter(val context: Context, val list: List<CategoryModel>) : B
             val view = LayoutInflater.from(context).inflate(R.layout.spinner_category_item, null, true)
             val item = getItem(position)
             view.category_icon.letter = item.name
+            view.category_icon.shapeColor = item.color
             view.category_title.setText(item.name)
             return view
         }
