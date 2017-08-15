@@ -10,4 +10,5 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(MainActivityModule::class))
 interface MainActivityComponent {
     fun inject(mainActivity: MainActivity)
+    fun inject(addExpenseDialogFragment: AddExpenseDialogFragment)
 }

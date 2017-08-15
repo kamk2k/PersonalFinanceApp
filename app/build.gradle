@@ -60,6 +60,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.0.2'
 
     compile 'com.github.vicpinm:krealmextensions:1.1.1'
+
+    compile 'com.github.ivbaranov:materiallettericon:0.2.2'
 }
 
 apply plugin: 'com.google.gms.google-services'

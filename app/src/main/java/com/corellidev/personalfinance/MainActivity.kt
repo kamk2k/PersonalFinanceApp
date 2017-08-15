@@ -1,6 +1,7 @@
 package com.corellidev.personalfinance
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
     private val RC_SIGN_IN: Int = 9003
     @Inject
     lateinit var expensesRepository: ExpensesRepository
+    @Inject
+    lateinit var categoriesRepository: CategoriesRepository
     lateinit var listAdapter: ExpensesListAdapter
     companion object {
         val TAG = "MainActivity"
@@ -57,6 +60,9 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
                         error -> Log.d(TAG, "getAllExpenses error " + error.toString())
                     })
         }
+        //TODO test code - remove when adding categories is done
+        categoriesRepository.addCategory(CategoryModel("Food", Color.BLUE))
+        categoriesRepository.addCategory(CategoryModel("Car", Color.RED))
 
         fab.setOnClickListener { view ->
             val addExpenseDialogFragment = AddExpenseDialogFragment()
