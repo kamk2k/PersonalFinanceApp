@@ -3,6 +3,7 @@ package com.corellidev.personalfinance
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
@@ -10,6 +11,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.BaseAdapter
 import kotlinx.android.synthetic.main.add_expense_dialog.view.*
 import kotlinx.android.synthetic.main.spinner_category_item.view.*
@@ -36,16 +38,30 @@ class AddExpenseDialogFragment : DialogFragment() {
         val view = activity.layoutInflater.inflate(R.layout.add_expense_dialog, null)
         val nameInput = view.expense_name_input
         val valueInput = view.expense_value_input
-        val categoryInput = view.expense_category_input
+        val categorySpinner = view.expense_category_input
+        val newCategoryInput = view.new_category_input
         MainActivity.mainActivityComponent.inject(this)
-        categoryInput.adapter = CategoriesAdapter(context, categoriesRepository.getAllCategories())
+        categorySpinner.adapter = CategoriesAdapter(context, categoriesRepository.getAllCategories())
+        categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                if(position >= categorySpinner.adapter.count - 1) {
+                    newCategoryInput.visibility = View.VISIBLE
+                } else {
+                    newCategoryInput.visibility = View.GONE
+                }
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                newCategoryInput.visibility = View.GONE
+            }
+        }
         return AlertDialog.Builder(activity)
                 .setTitle("Add new expense")
                 .setView(view)
                 .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
                     val name = nameInput.text.toString()
                     val value = valueInput.text.toString()
-                    val expense = ExpenseModel(-1, name, value.toDouble(), categoryInput.selectedItem.toString(), Date().time)
+                    val category = if (newCategoryInput.visibility == View.VISIBLE) newCategoryInput.text else categorySpinner.selectedItem.toString()
+                    val expense = ExpenseModel(-1, name, value.toDouble(), category.toString(), Date().time)
                     Log.d("MyTag", "expense = " + expense)
                     addClickListener?.onAddClick(expense)
                 }
@@ -59,10 +75,14 @@ class AddExpenseDialogFragment : DialogFragment() {
     }
 }
 
-class CategoriesAdapter(val context: Context, val list: List<CategoryModel>)
-    : BaseAdapter() {
+class CategoriesAdapter(val context: Context, val list: List<CategoryModel>) : BaseAdapter() {
+
     override fun getItem(position: Int): CategoryModel {
-        return list.get(position)
+        if(position >= list.size) {
+            return CategoryModel("", Color.CYAN)
+        } else {
+            return list.get(position)
+        }
     }
 
     override fun getItemId(position: Int): Long {
@@ -70,14 +90,19 @@ class CategoriesAdapter(val context: Context, val list: List<CategoryModel>)
     }
 
     override fun getCount(): Int {
-        return list.size
+        return list.size + 1
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
-        val view = LayoutInflater.from(context).inflate(R.layout.spinner_category_item, null, true)
-        val item = getItem(position)
-        view.category_icon.letter = item.name
-        view.category_title.setText(item.name)
-        return view
+        if(position >= list.size) {
+            val view = LayoutInflater.from(context).inflate(R.layout.spinner_add_category_item, null, true)
+            return view
+        } else {
+            val view = LayoutInflater.from(context).inflate(R.layout.spinner_category_item, null, true)
+            val item = getItem(position)
+            view.category_icon.letter = item.name
+            view.category_title.setText(item.name)
+            return view
+        }
     }
 }
