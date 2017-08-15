@@ -60,8 +60,14 @@ class AddExpenseDialogFragment : DialogFragment() {
                 .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
                     val name = nameInput.text.toString()
                     val value = valueInput.text.toString()
-                    val category = if (newCategoryInput.visibility == View.VISIBLE) newCategoryInput.text else categorySpinner.selectedItem.toString()
-                    val expense = ExpenseModel(-1, name, value.toDouble(), category.toString(), Date().time)
+                    var categoryName: String
+                    if (newCategoryInput.visibility == View.VISIBLE) {
+                        categoryName = newCategoryInput.text.toString()
+                        categoriesRepository.addCategory(CategoryModel(categoryName, Color.CYAN))
+                    } else {
+                        categoryName = (categorySpinner.selectedItem as CategoryModel).name
+                    }
+                    val expense = ExpenseModel(-1, name, value.toDouble(), categoryName, Date().time)
                     Log.d("MyTag", "expense = " + expense)
                     addClickListener?.onAddClick(expense)
                 }
