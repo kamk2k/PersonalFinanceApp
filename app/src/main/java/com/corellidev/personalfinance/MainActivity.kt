@@ -87,7 +87,10 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
-            R.id.action_settings -> true
+            R.id.action_categories -> {
+                startActivity(Intent(this, CategoriesActivity::class.java))
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
