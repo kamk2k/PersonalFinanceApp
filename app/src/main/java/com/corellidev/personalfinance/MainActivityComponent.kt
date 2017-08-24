@@ -11,4 +11,5 @@ import javax.inject.Singleton
 interface MainActivityComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(addExpenseDialogFragment: AddExpenseDialogFragment)
+    fun inject(categoriesActivity: CategoriesActivity)
 }

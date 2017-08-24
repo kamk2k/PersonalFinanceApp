@@ -41,7 +41,7 @@ class AddExpenseDialogFragment : DialogFragment() {
         val categorySpinner = view.expense_category_input
         val newCategoryInput = view.new_category_input
         MainActivity.mainActivityComponent.inject(this)
-        categorySpinner.adapter = CategoriesAdapter(context, categoriesRepository.getAllCategories())
+        categorySpinner.adapter = CategoriesDialogAdapter(context, categoriesRepository.getAllCategories())
         categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 if(position >= categorySpinner.adapter.count - 1) {
@@ -82,7 +82,7 @@ class AddExpenseDialogFragment : DialogFragment() {
     }
 }
 
-class CategoriesAdapter(val context: Context, val list: List<CategoryModel>) : BaseAdapter() {
+class CategoriesDialogAdapter(val context: Context, val list: List<CategoryModel>) : BaseAdapter() {
 
     override fun getItem(position: Int): CategoryModel {
         if(position >= list.size) {
