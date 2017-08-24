@@ -22,7 +22,8 @@ import javax.inject.Inject
  * Created by Kamil on 2017-08-22.
  */
 
-class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddClickListener {
+class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddClickListener,
+        CategoriesActivityAdapter.OnClickListener {
     @Inject
     lateinit var categoriesRepository: CategoriesRepository
     lateinit var listAdapter: CategoriesActivityAdapter
@@ -37,6 +38,7 @@ class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddCli
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@CategoriesActivity)
             listAdapter = CategoriesActivityAdapter(this@CategoriesActivity, categoriesRepository.getAllCategories().toMutableList())
+            listAdapter.clickListener = this@CategoriesActivity
             adapter = listAdapter
         }
 
@@ -52,13 +54,26 @@ class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddCli
         listAdapter.items.add(categoryModel)
         listAdapter.notifyItemInserted(listAdapter.itemCount)
     }
+
+    override fun onDeleteClick(categoryModel: CategoryModel) {
+        categoriesRepository.removeCategory(categoryModel)
+        val indexOfRemovedItem = listAdapter.items.indexOf(categoryModel)
+        listAdapter.items.remove(categoryModel)
+        listAdapter.notifyItemRemoved(indexOfRemovedItem)
+    }
 }
 
 class CategoriesActivityAdapter(val context: Context, val items: MutableList<CategoryModel>)  : RecyclerView.Adapter<CategoriesActivityAdapter.ViewHolder>() {
 
+    var clickListener: OnClickListener ? = null
+
+    interface OnClickListener {
+        fun onDeleteClick(categoryModel: CategoryModel)
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
         val inflater = LayoutInflater.from(context)
-        return ViewHolder(inflater.inflate(R.layout.categories_list_item, null, true))
+        return ViewHolder(inflater.inflate(R.layout.categories_list_item, null, true), clickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
@@ -69,12 +84,15 @@ class CategoriesActivityAdapter(val context: Context, val items: MutableList<Cat
         return items.size
     }
 
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ViewHolder(itemView: View, val onClickListener: OnClickListener?) : RecyclerView.ViewHolder(itemView) {
         fun bind(categoryModel: CategoryModel) {
             with(categoryModel) {
                 itemView.category_icon.letter = name
                 itemView.category_icon.shapeColor = color
                 itemView.category_title.setText(name)
+                itemView.remove_category_button.setOnClickListener({
+                    onClickListener?.onDeleteClick(this)
+                })
             }
         }
     }

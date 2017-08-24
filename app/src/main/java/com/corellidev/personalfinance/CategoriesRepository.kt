@@ -1,6 +1,7 @@
 package com.corellidev.personalfinance
 
 import android.support.annotation.ColorInt
+import com.vicpin.krealmextensions.delete
 import com.vicpin.krealmextensions.queryAll
 import com.vicpin.krealmextensions.save
 import io.realm.RealmObject
@@ -11,6 +12,9 @@ import javax.inject.Singleton
 /**
  * Created by Kamil on 2017-08-14.
  */
+val NAME_FIELD_NAME = "name"
+val COLOR_FIELD_NAME = "color"
+
 @Singleton
 class CategoriesRepository @Inject constructor(){
 
@@ -25,6 +29,10 @@ class CategoriesRepository @Inject constructor(){
             result.add(CategoryModel(categoryRealmModel.name, categoryRealmModel.color))
         }
         return result
+    }
+
+    fun removeCategory(categoryModel: CategoryModel) {
+        CategoryRealmModel().delete { query -> query.equalTo(NAME_FIELD_NAME, categoryModel.name) }
     }
 }
 
