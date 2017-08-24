@@ -73,6 +73,7 @@ class CategoriesActivityAdapter(val context: Context, val items: MutableList<Cat
         fun bind(categoryModel: CategoryModel) {
             with(categoryModel) {
                 itemView.category_icon.letter = name
+                itemView.category_icon.shapeColor = color
                 itemView.category_title.setText(name)
             }
         }
