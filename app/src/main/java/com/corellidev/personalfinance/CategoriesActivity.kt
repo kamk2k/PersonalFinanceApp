@@ -1,7 +1,11 @@
 package com.corellidev.personalfinance
 
+import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
+import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -9,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.add_category_dialog.view.*
 import kotlinx.android.synthetic.main.categories_list_item.view.*
 import kotlinx.android.synthetic.main.content_categories.*
 import javax.inject.Inject
@@ -17,8 +22,7 @@ import javax.inject.Inject
  * Created by Kamil on 2017-08-22.
  */
 
-class CategoriesActivity : AppCompatActivity() {
-
+class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddClickListener {
     @Inject
     lateinit var categoriesRepository: CategoriesRepository
     lateinit var listAdapter: CategoriesActivityAdapter
@@ -32,17 +36,25 @@ class CategoriesActivity : AppCompatActivity() {
         with (categories_list) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@CategoriesActivity)
-            listAdapter = CategoriesActivityAdapter(this@CategoriesActivity, categoriesRepository.getAllCategories())
+            listAdapter = CategoriesActivityAdapter(this@CategoriesActivity, categoriesRepository.getAllCategories().toMutableList())
             adapter = listAdapter
         }
 
         fab.setOnClickListener({
-            // todo : add category
+            val addCategoryDialogFragment = AddCategoryDialogFragment()
+            addCategoryDialogFragment.addClickListener = this
+            addCategoryDialogFragment.show(supportFragmentManager, addCategoryDialogFragment.TAG)
         })
+    }
+
+    override fun onAddClick(categoryModel: CategoryModel) {
+        categoriesRepository.addCategory(categoryModel)
+        listAdapter.items.add(categoryModel)
+        listAdapter.notifyItemInserted(listAdapter.itemCount)
     }
 }
 
-class CategoriesActivityAdapter(val context: Context, val items: List<CategoryModel>)  : RecyclerView.Adapter<CategoriesActivityAdapter.ViewHolder>() {
+class CategoriesActivityAdapter(val context: Context, val items: MutableList<CategoryModel>)  : RecyclerView.Adapter<CategoriesActivityAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? {
         val inflater = LayoutInflater.from(context)
@@ -64,5 +76,34 @@ class CategoriesActivityAdapter(val context: Context, val items: List<CategoryMo
                 itemView.category_title.setText(name)
             }
         }
+    }
+}
+
+class AddCategoryDialogFragment : DialogFragment() {
+    val TAG = "AddCategoryDialogFragment"
+    var addClickListener: AddClickListener? = null
+
+    interface AddClickListener {
+        fun onAddClick(categoryModel: CategoryModel)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val view = activity.layoutInflater.inflate(R.layout.add_category_dialog, null)
+        val nameInput = view.category_name_input
+        return AlertDialog.Builder(activity)
+                .setTitle("Add new category")
+                .setView(view)
+                .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
+                    val name = nameInput.text.toString()
+                    val newCategory = CategoryModel(name, CategoryModel.ColorsManager.getNextColor(context))
+                    addClickListener?.onAddClick(newCategory)
+                }
+                .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
+                    dialogInterface.cancel()
+                }
+                .create()
+                .apply {
+                    setCanceledOnTouchOutside(false)
+                }
     }
 }
