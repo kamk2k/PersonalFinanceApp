@@ -43,11 +43,16 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         setSupportActionBar(toolbar)
 
 //        setGoogleSignIn()
+        //TODO test code - remove when adding categories is done
+        categoriesRepository.addCategory(CategoryModel("Food", Color.BLUE))
+        categoriesRepository.addCategory(CategoryModel("Car", Color.RED))
 
         with (expenses_list) {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@MainActivity)
-            listAdapter = ExpensesListAdapter()
+            val categoriesMap = HashMap<String, CategoryModel>()
+            categoriesRepository.getAllCategories().forEach({ item -> categoriesMap.put(item.name, item)})
+            listAdapter = ExpensesListAdapter(this@MainActivity, categoriesMap)
             adapter = listAdapter
             expensesRepository.getAllExpenses()
                     .subscribeOn(Schedulers.io())
@@ -60,9 +65,6 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
                         error -> Log.d(TAG, "getAllExpenses error " + error.toString())
                     })
         }
-        //TODO test code - remove when adding categories is done
-        categoriesRepository.addCategory(CategoryModel("Food", Color.BLUE))
-        categoriesRepository.addCategory(CategoryModel("Car", Color.RED))
 
         fab.setOnClickListener { view ->
             val addExpenseDialogFragment = AddExpenseDialogFragment()

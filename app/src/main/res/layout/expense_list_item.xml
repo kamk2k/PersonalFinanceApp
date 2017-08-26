@@ -15,17 +15,20 @@
         android:layout_width="match_parent"
         android:layout_height="64dp">
 
-        <ImageView
+        <com.github.ivbaranov.mli.MaterialLetterIcon
             android:id="@+id/icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginBottom="8dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_monetization_on_black" />
+            app:mli_initials="false"
+            app:mli_letters_number="1"
+            app:mli_shape_color="@color/colorAccent"
+            app:mli_shape_type="circle" />
 
         <TextView
             android:id="@+id/expense_name"
