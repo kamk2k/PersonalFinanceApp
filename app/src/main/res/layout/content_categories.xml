@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.corellidev.personalfinance.CategoriesActivity"
+    tools:context="com.corellidev.personalfinance.categories.CategoriesActivity"
     tools:showIn="@layout/activity_categories">
 
     <android.support.v7.widget.RecyclerView

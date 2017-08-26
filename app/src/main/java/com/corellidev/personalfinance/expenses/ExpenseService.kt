@@ -1,6 +1,7 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.expenses
 
 import android.content.Context
+import com.corellidev.personalfinance.R
 import com.google.gson.GsonBuilder
 import io.reactivex.Observable
 import okhttp3.OkHttpClient

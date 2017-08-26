@@ -1,4 +1,4 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.expenses
 
 import com.vicpin.krealmextensions.queryAll
 import com.vicpin.krealmextensions.save

@@ -1,4 +1,4 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.categories
 
 import android.app.Dialog
 import android.content.Context
@@ -14,6 +14,8 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.corellidev.personalfinance.expenses.MainActivity
+import com.corellidev.personalfinance.R
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.add_category_dialog.view.*
 import kotlinx.android.synthetic.main.categories_list_item.view.*
@@ -73,7 +75,7 @@ class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddCli
 
 class CategoriesActivityAdapter(val context: Context, val items: MutableList<CategoryModel>)  : RecyclerView.Adapter<CategoriesActivityAdapter.ViewHolder>() {
 
-    var clickListener: OnClickListener ? = null
+    var clickListener: OnClickListener? = null
 
     interface OnClickListener {
         fun onDeleteClick(categoryModel: CategoryModel)
@@ -123,7 +125,7 @@ class AddCategoryDialogFragment : DialogFragment() {
                 .setView(view)
                 .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
                     val name = nameInput.text.toString()
-                    val newCategory = CategoryModel(name, CategoryModel.ColorsManager.getNextColor(context))
+                    val newCategory = CategoryModel(name, CategoryModel.getNextColor(context))
                     addClickListener?.onAddClick(newCategory)
                 }
                 .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->

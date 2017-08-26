@@ -1,4 +1,4 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.expenses
 
 import android.content.Context
 import kotlinx.android.synthetic.main.expense_list_item.view.*
@@ -7,6 +7,8 @@ import android.support.v7.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.corellidev.personalfinance.R
+import com.corellidev.personalfinance.categories.CategoryModel
 import java.util.*
 
 /**

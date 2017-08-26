@@ -1,4 +1,4 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.expenses
 
 /**
  * Created by Kamil on 2017-06-20.

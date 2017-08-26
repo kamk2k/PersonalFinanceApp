@@ -1,4 +1,4 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.categories
 
 import android.support.annotation.ColorInt
 import com.vicpin.krealmextensions.delete

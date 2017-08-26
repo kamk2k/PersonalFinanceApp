@@ -1,4 +1,4 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.expenses
 
 import android.content.Intent
 import android.graphics.Color
@@ -8,9 +8,13 @@ import android.support.v7.widget.LinearLayoutManager
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.corellidev.personalfinance.DaggerMainActivityComponent
+import com.corellidev.personalfinance.MainActivityComponent
+import com.corellidev.personalfinance.MainActivityModule
+import com.corellidev.personalfinance.R
+import com.corellidev.personalfinance.categories.CategoriesActivity
+import com.corellidev.personalfinance.categories.CategoriesRepository
+import com.corellidev.personalfinance.categories.CategoryModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import io.reactivex.android.schedulers.AndroidSchedulers

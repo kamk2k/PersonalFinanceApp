@@ -1,7 +1,8 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.categories
 
 import android.content.Context
 import android.support.annotation.ColorInt
+import com.corellidev.personalfinance.R
 
 /**
  * Created by Kamil on 2017-08-14.

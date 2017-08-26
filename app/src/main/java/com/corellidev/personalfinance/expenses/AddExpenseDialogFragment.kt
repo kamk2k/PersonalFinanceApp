@@ -1,4 +1,4 @@
-package com.corellidev.personalfinance
+package com.corellidev.personalfinance.expenses
 
 import android.app.Dialog
 import android.content.Context
@@ -15,6 +15,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.BaseAdapter
+import com.corellidev.personalfinance.R
+import com.corellidev.personalfinance.categories.CategoriesRepository
+import com.corellidev.personalfinance.categories.CategoryModel
 import kotlinx.android.synthetic.main.add_expense_dialog.view.*
 import kotlinx.android.synthetic.main.spinner_category_item.view.*
 import java.util.*
@@ -69,7 +72,7 @@ class AddExpenseDialogFragment : DialogFragment() {
                     if (newCategoryInput.visibility == View.VISIBLE) {
                         categoryName = newCategoryInput.text.toString()
                         categoriesRepository.addCategory(CategoryModel(categoryName,
-                                CategoryModel.ColorsManager.getNextColor(context)))
+                                CategoryModel.getNextColor(context)))
                     } else {
                         categoryName = (categorySpinner.selectedItem as CategoryModel).name
                     }

@@ -2,6 +2,8 @@ package com.corellidev.personalfinance
 
 import android.app.Application
 import android.content.Context
+import com.corellidev.personalfinance.expenses.ExpenseServiceDelegate
+import com.corellidev.personalfinance.expenses.ExpensesRepository
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
