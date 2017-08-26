@@ -8,4 +8,11 @@
         android:icon="@drawable/ic_local_offer"
         android:title="@string/action_categories"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_statistics"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_insert_chart"
+        android:title="@string/action_statistics"
+        app:showAsAction="ifRoom" />
 </menu>

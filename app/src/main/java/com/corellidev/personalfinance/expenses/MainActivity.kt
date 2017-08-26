@@ -15,6 +15,7 @@ import com.corellidev.personalfinance.R
 import com.corellidev.personalfinance.categories.CategoriesActivity
 import com.corellidev.personalfinance.categories.CategoriesRepository
 import com.corellidev.personalfinance.categories.CategoryModel
+import com.corellidev.personalfinance.statistics.StatisticsActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -95,6 +96,10 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         return when (item.itemId) {
             R.id.action_categories -> {
                 startActivity(Intent(this, CategoriesActivity::class.java))
+                true
+            }
+            R.id.action_statistics -> {
+                startActivity(Intent(this, StatisticsActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -37,6 +37,7 @@ class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddCli
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_categories)
         setSupportActionBar(toolbar)
+        toolbar.setNavigationOnClickListener({finish()})
         MainActivity.mainActivityComponent.inject(this)
 
         with (categories_list) {
