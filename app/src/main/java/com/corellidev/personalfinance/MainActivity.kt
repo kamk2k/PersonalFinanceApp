@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         mainActivityComponent.inject(this)
         setSupportActionBar(toolbar)
 
-        setGoogleSignIn()
+//        setGoogleSignIn()
 
         with (expenses_list) {
             setHasFixedSize(true)
@@ -95,43 +95,43 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         }
     }
 
-    private fun setGoogleSignIn() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.web_app_client_id))
-                .requestEmail()
-                .build()
-        val mGoogleApiClient = GoogleApiClient.Builder(this)
-                .enableAutoManage(this, this)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build()
-        sign_in_button.setOnClickListener({ view ->
-            val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
-            startActivityForResult(signInIntent, RC_SIGN_IN)
-        })
-    }
+//    private fun setGoogleSignIn() {
+//        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                .requestIdToken(getString(R.string.web_app_client_id))
+//                .requestEmail()
+//                .build()
+//        val mGoogleApiClient = GoogleApiClient.Builder(this)
+//                .enableAutoManage(this, this)
+//                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//                .build()
+//        sign_in_button.setOnClickListener({ view ->
+//            val signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient)
+//            startActivityForResult(signInIntent, RC_SIGN_IN)
+//        })
+//    }
 
     override fun onConnectionFailed(p0: ConnectionResult) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
+//    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+//        if (requestCode == RC_SIGN_IN) {
+//            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+//            handleSignInResult(result)
+//        }
+//    }
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            val result = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
-            handleSignInResult(result)
-        }
-    }
-
-    private fun handleSignInResult(result: GoogleSignInResult) {
-        Log.d("MyTag", "handleSignInResult:" + result.isSuccess + " tokenid = " + result.signInAccount?.idToken
-        + " email = " + result.signInAccount?.email)
-        if (result.isSuccess) {
-            Log.d("MyTag", "success")
-            expensesRepository.token = result.signInAccount?.idToken
-        } else {
-            Log.d("MyTag", "failure ")
-        }
-    }
+//    private fun handleSignInResult(result: GoogleSignInResult) {
+//        Log.d("MyTag", "handleSignInResult:" + result.isSuccess + " tokenid = " + result.signInAccount?.idToken
+//        + " email = " + result.signInAccount?.email)
+//        if (result.isSuccess) {
+//            Log.d("MyTag", "success")
+//            expensesRepository.token = result.signInAccount?.idToken
+//        } else {
+//            Log.d("MyTag", "failure ")
+//        }
+//    }
 }

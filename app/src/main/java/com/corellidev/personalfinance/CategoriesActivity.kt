@@ -9,6 +9,8 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +23,7 @@ import javax.inject.Inject
 /**
  * Created by Kamil on 2017-08-22.
  */
+val CATEGORIES_NAMES_LIST_KEY = "CATEGORIES_NAMES_LIST_KEY"
 
 class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddClickListener,
         CategoriesActivityAdapter.OnClickListener {
@@ -44,6 +47,11 @@ class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddCli
 
         fab.setOnClickListener({
             val addCategoryDialogFragment = AddCategoryDialogFragment()
+            val bundle = Bundle()
+            val categoriesNamesArrayList  = ArrayList<String>()
+            listAdapter.items.forEach({item -> categoriesNamesArrayList.add(item.name)})
+            bundle.putStringArrayList(CATEGORIES_NAMES_LIST_KEY, categoriesNamesArrayList)
+            addCategoryDialogFragment.arguments = bundle
             addCategoryDialogFragment.addClickListener = this
             addCategoryDialogFragment.show(supportFragmentManager, addCategoryDialogFragment.TAG)
         })
@@ -109,7 +117,8 @@ class AddCategoryDialogFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = activity.layoutInflater.inflate(R.layout.add_category_dialog, null)
         val nameInput = view.category_name_input
-        return AlertDialog.Builder(activity)
+        val categoriesNames = arguments.getStringArrayList(CATEGORIES_NAMES_LIST_KEY)
+        val dialog = AlertDialog.Builder(activity)
                 .setTitle("Add new category")
                 .setView(view)
                 .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
@@ -121,8 +130,21 @@ class AddCategoryDialogFragment : DialogFragment() {
                     dialogInterface.cancel()
                 }
                 .create()
-                .apply {
-                    setCanceledOnTouchOutside(false)
-                }
+        dialog.setOnShowListener({
+            dialog ->
+                view.category_name_input.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(s: Editable?) {
+                        if(categoriesNames.contains(s.toString())) {
+                            (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                        } else {
+                            (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                        }
+                    }
+                    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+                })
+        })
+        dialog.apply {setCanceledOnTouchOutside(false)}
+        return dialog
     }
 }

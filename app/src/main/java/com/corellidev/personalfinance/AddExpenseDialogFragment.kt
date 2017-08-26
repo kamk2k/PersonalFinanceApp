@@ -7,6 +7,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +43,10 @@ class AddExpenseDialogFragment : DialogFragment() {
         val categorySpinner = view.expense_category_input
         val newCategoryInput = view.new_category_input
         MainActivity.mainActivityComponent.inject(this)
-        categorySpinner.adapter = CategoriesDialogAdapter(context, categoriesRepository.getAllCategories())
+        val existingCategories = categoriesRepository.getAllCategories()
+        val categoriesNamesArrayList  = ArrayList<String>()
+        existingCategories.forEach({item -> categoriesNamesArrayList.add(item.name)})
+        categorySpinner.adapter = CategoriesDialogAdapter(context, existingCategories)
         categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 if(position >= categorySpinner.adapter.count - 1) {
@@ -54,7 +59,7 @@ class AddExpenseDialogFragment : DialogFragment() {
                 newCategoryInput.visibility = View.GONE
             }
         }
-        return AlertDialog.Builder(activity)
+        val dialog = AlertDialog.Builder(activity)
                 .setTitle("Add new expense")
                 .setView(view)
                 .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
@@ -76,9 +81,22 @@ class AddExpenseDialogFragment : DialogFragment() {
                     dialogInterface.cancel()
                 }
                 .create()
-                .apply {
-                    setCanceledOnTouchOutside(false)
+        dialog.setOnShowListener({
+            dialog ->
+            newCategoryInput.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if (categoriesNamesArrayList.contains(s.toString())) {
+                        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = false
+                    } else {
+                        (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE).isEnabled = true
+                    }
                 }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) = Unit
+            })
+        })
+        dialog.apply {setCanceledOnTouchOutside(false)}
+        return dialog
     }
 }
 
