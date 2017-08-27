@@ -3,6 +3,7 @@ package com.corellidev.personalfinance
 import com.corellidev.personalfinance.categories.CategoriesActivity
 import com.corellidev.personalfinance.expenses.AddExpenseDialogFragment
 import com.corellidev.personalfinance.expenses.MainActivity
+import com.corellidev.personalfinance.statistics.StatisticsActivity
 import dagger.Component
 import javax.inject.Singleton
 
@@ -15,4 +16,5 @@ interface MainActivityComponent {
     fun inject(mainActivity: MainActivity)
     fun inject(addExpenseDialogFragment: AddExpenseDialogFragment)
     fun inject(categoriesActivity: CategoriesActivity)
+    fun inject(statisticsActivity: StatisticsActivity)
 }

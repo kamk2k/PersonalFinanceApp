@@ -9,38 +9,59 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.corellidev.personalfinance.R
+import com.corellidev.personalfinance.expenses.ExpensesRepository
+import com.corellidev.personalfinance.expenses.MainActivity
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_statistics.*
 import kotlinx.android.synthetic.main.content_statistics.*
 import kotlinx.android.synthetic.main.history_list_item.view.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import javax.inject.Inject
 
 class StatisticsActivity : AppCompatActivity() {
 
+    @Inject
+    lateinit var expensesRepository: ExpensesRepository
     lateinit var listAdapter: HistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MainActivity.mainActivityComponent.inject(this)
         setContentView(R.layout.activity_statistics)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener({finish()})
 
         with (history_list) {
             setHasFixedSize(true)
-
-            //TODO test data, remove later
             layoutManager = LinearLayoutManager(this@StatisticsActivity)
-            listAdapter = HistoryAdapter(this@StatisticsActivity,
-                    mutableListOf(HistoryRecordModel(1503759583691, 1897.34),
-                            HistoryRecordModel(1361890806000, 1227.14),
-                            HistoryRecordModel(1406386806000, 4897.23)))
+            listAdapter = HistoryAdapter(this@StatisticsActivity)
             adapter = listAdapter
         }
+        setContentForHistoryListAdapter()
+    }
+
+    private fun setContentForHistoryListAdapter(): Disposable? {
+        return expensesRepository.getAllExpenses().subscribe({ expenses ->
+            val historyRecordsList = ArrayList<HistoryRecordModel>()
+            expenses
+                    .sortedBy { it.time }
+                    .groupBy({
+                        DateTime(it.time).year().get() * 100 + DateTime(it.time).monthOfYear().get()
+                    })
+                    .forEach({ mapEntry ->
+                        historyRecordsList.add(HistoryRecordModel(mapEntry.value.first().time,
+                                mapEntry.value.sumByDouble { it.value }))
+                    })
+            listAdapter.setContent(historyRecordsList)
+        })
     }
 }
 
-class HistoryAdapter(val context: Context, val items: MutableList<HistoryRecordModel>):
+class HistoryAdapter(val context: Context):
         RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+
+    var items: MutableList<HistoryRecordModel> = mutableListOf()
 
     override fun onBindViewHolder(holder: HistoryAdapter.ViewHolder?, position: Int) {
         (holder as ViewHolder).bind(items.get(position))
@@ -52,6 +73,11 @@ class HistoryAdapter(val context: Context, val items: MutableList<HistoryRecordM
     }
 
     override fun getItemCount(): Int = items.size
+
+    fun setContent(items: MutableList<HistoryRecordModel>) {
+        this.items = items
+        notifyDataSetChanged()
+    }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateFormat = DateTimeFormat.forPattern("MM.yyyy");
