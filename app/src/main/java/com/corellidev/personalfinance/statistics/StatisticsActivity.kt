@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import com.corellidev.personalfinance.R
 import com.corellidev.personalfinance.expenses.ExpensesRepository
 import com.corellidev.personalfinance.expenses.MainActivity
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_statistics.*
 import kotlinx.android.synthetic.main.content_statistics.*
@@ -18,6 +21,7 @@ import kotlinx.android.synthetic.main.history_list_item.view.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 
 class StatisticsActivity : AppCompatActivity() {
 
@@ -31,6 +35,18 @@ class StatisticsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_statistics)
         setSupportActionBar(toolbar)
         toolbar.setNavigationOnClickListener({finish()})
+
+        //TODO test data, remove later
+        val barEntries = ArrayList<BarEntry>()
+        barEntries.add(BarEntry(1f, floatArrayOf(12f, 17f, 90f)))
+        barEntries.add(BarEntry(2f, floatArrayOf(1f, 2f, 12f)))
+        barEntries.add(BarEntry(3f, floatArrayOf(122f, 17f, 44f)))
+        val barDataSet = BarDataSet(barEntries, "TEST DATA")
+        val dataSets = ArrayList<IBarDataSet>()
+        dataSets.add(barDataSet)
+        val data = BarData(dataSets)
+        statistics_chart.data = data
+        statistics_chart.invalidate()
 
         with (history_list) {
             setHasFixedSize(true)
