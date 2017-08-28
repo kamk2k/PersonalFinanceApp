@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -69,6 +70,16 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
                     {
                         error -> Log.d(TAG, "getAllExpenses error " + error.toString())
                     })
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if(dy > 0 ){
+                        if(fab.isShown) fab.hide()
+                    } else {
+                        if(!fab.isShown) fab.show()
+                    }
+                }
+            })
         }
 
         fab.setOnClickListener { view ->

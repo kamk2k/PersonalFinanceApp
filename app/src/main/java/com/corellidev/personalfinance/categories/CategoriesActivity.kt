@@ -46,6 +46,16 @@ class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddCli
             listAdapter = CategoriesActivityAdapter(this@CategoriesActivity, categoriesRepository.getAllCategories().toMutableList())
             listAdapter.clickListener = this@CategoriesActivity
             adapter = listAdapter
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if(dy > 0 ){
+                        if(fab.isShown) fab.hide();
+                    } else {
+                        if(!fab.isShown) fab.show();
+                    }
+                }
+            })
         }
 
         fab.setOnClickListener({
