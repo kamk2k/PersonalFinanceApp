@@ -27,6 +27,7 @@ import kotlinx.android.synthetic.main.content_statistics.*
 import kotlinx.android.synthetic.main.history_list_item.view.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 
@@ -74,22 +75,26 @@ class StatisticsActivity : AppCompatActivity() {
         legend.form = LegendForm.SQUARE
 
         expensesRepository.getAllExpenses().subscribe({ expenses ->
+            val dataSets = ArrayList<IBarDataSet>()
             expenses
                     .sortedBy { it.time }
                     .groupBy({
-                        DateTime(it.time).year().get() * 100 + DateTime(it.time).monthOfYear().get()
+                        DateTime(it.time).year().get() * 12 + DateTime(it.time).monthOfYear().get()
                     })
                     .forEach({ mapEntry ->
                         val barEntries = ArrayList<BarEntry>()
-                        barEntries.add(BarEntry(mapEntry.key.toFloat(), mapEntry.value.sumByDouble { it.value }.toFloat()))
+                        val categoriesGroupedExpenses = mapEntry.value.groupBy { it.category }
+                        barEntries.add(BarEntry(mapEntry.key.toFloat(),
+                                categoriesGroupedExpenses.map {
+                                    it.value.sumByDouble { it.value }.toFloat()
+                                }.toFloatArray()))
                         val barDataSet = BarDataSet(barEntries, "TEST DATA")
                         barDataSet.colors = ColorTemplate.MATERIAL_COLORS.toList();
-                        val dataSets = ArrayList<IBarDataSet>()
                         dataSets.add(barDataSet)
-                        val data = BarData(dataSets)
-                        statistics_chart.data = data
-                        statistics_chart.invalidate()
                     })
+            val data = BarData(dataSets)
+            statistics_chart.data = data
+            statistics_chart.invalidate()
         })
 
         with (history_list) {
@@ -141,9 +146,10 @@ class HistoryAdapter(val context: Context):
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateFormat = DateTimeFormat.forPattern("MM.yyyy")
+        val valueFormat = DecimalFormat("#.00")
         fun bind(historyRecordModel: HistoryRecordModel) {
             itemView.date.text = DateTime(historyRecordModel.date).toString(dateFormat)
-            itemView.value.text = historyRecordModel.value.toString()
+            itemView.value.text = valueFormat.format(historyRecordModel.value)
         }
     }
 }
