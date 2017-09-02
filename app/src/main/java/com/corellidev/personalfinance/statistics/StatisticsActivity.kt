@@ -74,6 +74,9 @@ class StatisticsActivity : AppCompatActivity() {
         legend.setDrawInside(false)
         legend.form = LegendForm.SQUARE
 
+        val categoriesList = categoriesRepository.getAllCategories()
+        val categoriesColorsMap = categoriesList.associateBy({it.name}, {it.color})
+
         expensesRepository.getAllExpenses().subscribe({ expenses ->
             val dataSets = ArrayList<IBarDataSet>()
             expenses
@@ -89,7 +92,8 @@ class StatisticsActivity : AppCompatActivity() {
                                     it.value.sumByDouble { it.value }.toFloat()
                                 }.toFloatArray()))
                         val barDataSet = BarDataSet(barEntries, "TEST DATA")
-                        barDataSet.colors = ColorTemplate.MATERIAL_COLORS.toList();
+                        barDataSet.colors = categoriesGroupedExpenses.keys
+                                .map{categoriesColorsMap[it]}
                         dataSets.add(barDataSet)
                     })
             val data = BarData(dataSets)
