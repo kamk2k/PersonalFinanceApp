@@ -89,10 +89,12 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
     }
 
     private fun fillDatabases() {
+        categoriesRepository.deleteAllCategoires()
         categoriesRepository.addCategory(CategoryModel("Food", Color.BLUE))
         categoriesRepository.addCategory(CategoryModel("Car", Color.RED))
         categoriesRepository.addCategory(CategoryModel("Bills", Color.GREEN))
 
+        expensesRepository.deleteAllExpenses()
         expensesRepository.addExpense(ExpenseModel(0, "Groceries", 123.13, "Food", 1475413783000))
         expensesRepository.addExpense(ExpenseModel(0, "Groceries", 234.11, "Food", 1478524183000))
         expensesRepository.addExpense(ExpenseModel(0, "Groceries", 11.2, "Food", 1481634583000))

@@ -2,6 +2,7 @@ package com.corellidev.personalfinance.categories
 
 import android.support.annotation.ColorInt
 import com.vicpin.krealmextensions.delete
+import com.vicpin.krealmextensions.deleteAll
 import com.vicpin.krealmextensions.queryAll
 import com.vicpin.krealmextensions.save
 import io.realm.RealmObject
@@ -31,8 +32,12 @@ class CategoriesRepository @Inject constructor(){
         return result
     }
 
-    fun removeCategory(categoryModel: CategoryModel) {
+    fun deleteCategory(categoryModel: CategoryModel) {
         CategoryRealmModel().delete { query -> query.equalTo(NAME_FIELD_NAME, categoryModel.name) }
+    }
+
+    fun deleteAllCategoires() {
+        CategoryRealmModel().deleteAll()
     }
 }
 

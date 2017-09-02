@@ -1,5 +1,6 @@
 package com.corellidev.personalfinance.expenses
 
+import com.vicpin.krealmextensions.deleteAll
 import com.vicpin.krealmextensions.queryAll
 import com.vicpin.krealmextensions.save
 import io.reactivex.Observable
@@ -24,7 +25,7 @@ class ExpensesRepository {
     var expenses: MutableList<ExpenseModel> = mutableListOf()
 
     fun getAllExpenses(): Single<List<ExpenseModel>> {
-        return Observable.fromIterable(ExpenseRealmModel().queryAll()).flatMap({
+        return Observable.fromIterable(ExpenseRealmModel().queryAll().sortedByDescending {it.time}).flatMap({
             expense -> Observable.just(ExpenseModel(0, expense.name, expense.value, expense.category, expense.time))
         }).toList()
 
@@ -42,6 +43,10 @@ class ExpensesRepository {
 //        expensesService.addExpense(token, addedExpense)
 //                .subscribeOn(Schedulers.io())
 //                .subscribe()
+    }
+
+    fun deleteAllExpenses() {
+        ExpenseRealmModel().deleteAll()
     }
 }
 

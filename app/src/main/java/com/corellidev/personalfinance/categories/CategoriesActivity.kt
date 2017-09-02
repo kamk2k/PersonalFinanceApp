@@ -77,7 +77,7 @@ class CategoriesActivity : AppCompatActivity(), AddCategoryDialogFragment.AddCli
     }
 
     override fun onDeleteClick(categoryModel: CategoryModel) {
-        categoriesRepository.removeCategory(categoryModel)
+        categoriesRepository.deleteCategory(categoryModel)
         val indexOfRemovedItem = listAdapter.items.indexOf(categoryModel)
         listAdapter.items.remove(categoryModel)
         listAdapter.notifyItemRemoved(indexOfRemovedItem)
