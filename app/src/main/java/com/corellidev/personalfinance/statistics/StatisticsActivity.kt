@@ -14,6 +14,7 @@ import com.corellidev.personalfinance.expenses.ExpensesRepository
 import com.corellidev.personalfinance.expenses.MainActivity
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.Legend.LegendForm
+import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
@@ -77,15 +78,19 @@ class StatisticsActivity : AppCompatActivity() {
         yAxisRight.spaceTop = 15f
         yAxisRight.axisMinimum = 0f
 
+        val categoriesList = categoriesRepository.getAllCategories()
+        val categoriesColorsMap = categoriesList.associateBy({it.name}, {it.color})
+
         val legend = statistics_chart.legend
         legend.verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
         legend.horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
         legend.orientation = Legend.LegendOrientation.HORIZONTAL
         legend.setDrawInside(false)
         legend.form = LegendForm.SQUARE
-
-        val categoriesList = categoriesRepository.getAllCategories()
-        val categoriesColorsMap = categoriesList.associateBy({it.name}, {it.color})
+        legend.setCustom(categoriesList.map { item ->
+            LegendEntry(item.name, LegendForm.DEFAULT, Float.NaN, Float.NaN,
+                    null, item.color)
+        })
 
         expensesRepository.getAllExpenses().subscribe({ expenses ->
             val dataSets = ArrayList<IBarDataSet>()
@@ -102,6 +107,7 @@ class StatisticsActivity : AppCompatActivity() {
                                     it.value.sumByDouble { it.value }.toFloat()
                                 }.toFloatArray()))
                         val barDataSet = BarDataSet(barEntries, "TEST DATA")
+                        barDataSet.isHighlightEnabled = false
                         barDataSet.colors = categoriesGroupedExpenses.keys
                                 .map{categoriesColorsMap[it]}
                         dataSets.add(barDataSet)
