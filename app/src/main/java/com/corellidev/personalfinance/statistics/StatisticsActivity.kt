@@ -20,7 +20,6 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_statistics.*
 import kotlinx.android.synthetic.main.content_statistics.*
@@ -55,6 +54,17 @@ class StatisticsActivity : AppCompatActivity() {
         xAxis.setDrawGridLines(false)
         xAxis.granularity = 1f // only intervals of 1 day
         xAxis.labelCount = 7
+        xAxis.setValueFormatter { value, axis ->
+            if((value % 12).equals(0f)) {
+                val year = ((value / 12) - 1).toInt()
+                val month = 12
+                month.toString() + "." + year.toString()
+            } else {
+                val year = Math.floor((value / 12).toDouble()).toInt()
+                val month = (value % 12).toInt()
+                month.toString() + "." + year.toString()
+            }
+        }
 
         val yAxisLeft = statistics_chart.axisLeft
         yAxisLeft.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART)
