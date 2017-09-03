@@ -27,29 +27,47 @@ import javax.inject.Inject
  * Created by Kamil on 2017-06-20.
  */
 
+val EDITED_EXPENSE_ID = "EDITED_EXPENSE_ID"
+
 class AddExpenseDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var categoriesRepository: CategoriesRepository
-    var addClickListener: AddClickListener? = null
+    @Inject
+    lateinit var expensesRepository: ExpensesRepository
+
+    var acceptClickListener: AcceptClickListener? = null
 
     val TAG = "AddExpenseDialogFragment"
 
-    interface AddClickListener {
+    interface AcceptClickListener {
         fun onAddClick(expense: ExpenseModel)
+        fun onEditAcceptClick(expense: ExpenseModel)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val editMode = arguments != null && arguments.keySet().contains(EDITED_EXPENSE_ID)
         val view = activity.layoutInflater.inflate(R.layout.add_expense_dialog, null)
+        MainActivity.mainActivityComponent.inject(this)
         val nameInput = view.expense_name_input
         val valueInput = view.expense_value_input
         val categorySpinner = view.expense_category_input
         val newCategoryInput = view.new_category_input
-        MainActivity.mainActivityComponent.inject(this)
         val existingCategories = categoriesRepository.getAllCategories()
         val categoriesNamesArrayList  = ArrayList<String>()
+        var expenseId: String? = null
+        var expenseTimestamp: Long? = null
         existingCategories.forEach({item -> categoriesNamesArrayList.add(item.name)})
         categorySpinner.adapter = CategoriesDialogAdapter(context, existingCategories)
+        if(editMode) {
+            expensesRepository.getExpense(arguments.getString(EDITED_EXPENSE_ID)).subscribe({ editedExpense ->
+                nameInput.setText(editedExpense.name)
+                valueInput.setText(editedExpense.value.toString())
+                categorySpinner.setSelection(existingCategories.map { it.name }.indexOf(editedExpense.category))
+                expenseId = editedExpense.id
+                expenseTimestamp = editedExpense.time
+            })
+        }
         categorySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 if(position >= categorySpinner.adapter.count - 1) {
@@ -62,10 +80,12 @@ class AddExpenseDialogFragment : DialogFragment() {
                 newCategoryInput.visibility = View.GONE
             }
         }
+        val titleText = if(editMode) "Edit expense" else "Add new expense"
+        val positiveButtonText = if(editMode) "Accept" else "Add"
         val dialog = AlertDialog.Builder(activity)
-                .setTitle("Add new expense")
+                .setTitle(titleText)
                 .setView(view)
-                .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
+                .setPositiveButton(positiveButtonText) { dialogInterface: DialogInterface, i: Int ->
                     val name = nameInput.text.toString()
                     val value = valueInput.text.toString()
                     var categoryName: String
@@ -76,9 +96,13 @@ class AddExpenseDialogFragment : DialogFragment() {
                     } else {
                         categoryName = (categorySpinner.selectedItem as CategoryModel).name
                     }
-                    val expense = ExpenseModel(-1, name, value.toDouble(), categoryName, Date().time)
-                    Log.d("MyTag", "expense = " + expense)
-                    addClickListener?.onAddClick(expense)
+                    if(editMode && expenseId != null && expenseTimestamp != null) {
+                        acceptClickListener?.onEditAcceptClick(
+                                ExpenseModel(expenseId!!, name, value.toDouble(), categoryName, expenseTimestamp!!))
+                    } else {
+                        acceptClickListener?.onAddClick(
+                                ExpenseModel(BLANK_ID, name, value.toDouble(), categoryName, Date().time))
+                    }
                 }
                 .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
                     dialogInterface.cancel()

@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.content_main.*
 import javax.inject.Inject
 
 
-class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListener,
+class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AcceptClickListener,
         GoogleApiClient.OnConnectionFailedListener {
     private val RC_SIGN_IN: Int = 9003
     @Inject
@@ -57,7 +57,17 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
             layoutManager = LinearLayoutManager(this@MainActivity)
             val categoriesMap = HashMap<String, CategoryModel>()
             categoriesRepository.getAllCategories().forEach({ item -> categoriesMap.put(item.name, item)})
-            listAdapter = ExpensesListAdapter(this@MainActivity, categoriesMap)
+            listAdapter = ExpensesListAdapter(this@MainActivity, categoriesMap,
+                    object : ExpensesListAdapter.OnExpenseClickListener{
+                        override fun onExpenseClick(expenseModel: ExpenseModel) {
+                            val addExpenseDialogFragment = AddExpenseDialogFragment()
+                            val bundle = Bundle()
+                            bundle.putString(EDITED_EXPENSE_ID, expenseModel.id)
+                            addExpenseDialogFragment.arguments = bundle
+                            addExpenseDialogFragment.acceptClickListener = this@MainActivity
+                            addExpenseDialogFragment.show(supportFragmentManager, addExpenseDialogFragment.TAG)
+                        }
+                    })
             adapter = listAdapter
             expensesRepository.getAllExpenses()
                     .subscribeOn(Schedulers.io())
@@ -83,7 +93,7 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
 
         fab.setOnClickListener { view ->
             val addExpenseDialogFragment = AddExpenseDialogFragment()
-            addExpenseDialogFragment.addClickListener = this
+            addExpenseDialogFragment.acceptClickListener = this
             addExpenseDialogFragment.show(supportFragmentManager, addExpenseDialogFragment.TAG)
         }
     }
@@ -95,30 +105,38 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AddClickListe
         categoriesRepository.addCategory(CategoryModel("Bills", Color.GREEN))
 
         expensesRepository.deleteAllExpenses()
-        expensesRepository.addExpense(ExpenseModel(0, "Groceries", 123.13, "Food", 1475413783000))
-        expensesRepository.addExpense(ExpenseModel(0, "Groceries", 234.11, "Food", 1478524183000))
-        expensesRepository.addExpense(ExpenseModel(0, "Groceries", 11.2, "Food", 1481634583000))
-        expensesRepository.addExpense(ExpenseModel(0, "Groceries", 412.34, "Food", 1485176983000))
-        expensesRepository.addExpense(ExpenseModel(0, "Groceries", 189.65, "Food", 1486904983000))
-        expensesRepository.addExpense(ExpenseModel(0, "Groceries", 453.21, "Food", 1490879383000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Groceries", 123.13, "Food", 1475413783000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Groceries", 234.11, "Food", 1478524183000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Groceries", 11.2, "Food", 1481634583000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Groceries", 412.34, "Food", 1485176983000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Groceries", 189.65, "Food", 1486904983000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Groceries", 453.21, "Food", 1490879383000))
 
-        expensesRepository.addExpense(ExpenseModel(0, "Car service", 50.00, "Car", 1475413183000))
-        expensesRepository.addExpense(ExpenseModel(0, "Car service", 25.00, "Car", 1478178583000))
-        expensesRepository.addExpense(ExpenseModel(0, "Car service", 50.00, "Car", 1481461783000))
-        expensesRepository.addExpense(ExpenseModel(0, "Car service", 100.00, "Car", 1485004183000))
-        expensesRepository.addExpense(ExpenseModel(0, "Car service", 125.00, "Car", 1486904983000))
-        expensesRepository.addExpense(ExpenseModel(0, "Car service", 150.00, "Car", 1488373783000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Car service", 50.00, "Car", 1475413183000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Car service", 25.00, "Car", 1478178583000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Car service", 50.00, "Car", 1481461783000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Car service", 100.00, "Car", 1485004183000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Car service", 125.00, "Car", 1486904983000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Car service", 150.00, "Car", 1488373783000))
 
-        expensesRepository.addExpense(ExpenseModel(0, "Flat rent", 900.00, "Bills", 1475413456000))
-        expensesRepository.addExpense(ExpenseModel(0, "Flat rent", 900.00, "Bills", 1480424983000))
-        expensesRepository.addExpense(ExpenseModel(0, "Flat rent", 900.00, "Bills", 1483016983000))
-        expensesRepository.addExpense(ExpenseModel(0, "Flat rent", 900.00, "Bills", 1485695383000))
-        expensesRepository.addExpense(ExpenseModel(0, "Flat rent", 900.00, "Bills", 1488373783000))
-        expensesRepository.addExpense(ExpenseModel(0, "Flat rent", 900.00, "Bills", 1490792983000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Flat rent", 900.00, "Bills", 1475413456000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Flat rent", 900.00, "Bills", 1480424983000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Flat rent", 900.00, "Bills", 1483016983000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Flat rent", 900.00, "Bills", 1485695383000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Flat rent", 900.00, "Bills", 1488373783000))
+        expensesRepository.addExpense(ExpenseModel(BLANK_ID, "Flat rent", 900.00, "Bills", 1490792983000))
     }
 
     override fun onAddClick(expense: ExpenseModel) {
-        listAdapter.items.add(expense)
+        val updatedId = expensesRepository.addExpense(expense)
+        listAdapter.items.add(ExpenseModel(updatedId, expense.name, expense.value, expense.category, expense.time))
+    }
+
+    override fun onEditAcceptClick(expense: ExpenseModel) {
+        val editedExpenseIndex = listAdapter.items.map { it.id }.indexOf(expense.id)
+        listAdapter.items.removeAt(editedExpenseIndex)
+        listAdapter.items.add(editedExpenseIndex, expense)
+        listAdapter.notifyDataSetChanged()
         expensesRepository.addExpense(expense)
     }
 

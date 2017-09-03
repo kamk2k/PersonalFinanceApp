@@ -15,10 +15,14 @@ import java.util.*
  * Created by Kamil on 2017-06-20.
  */
 
-
-class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, CategoryModel>) : Adapter<ExpensesListAdapter.ViewHolder>() {
+class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, CategoryModel>,
+                          val onExpenseClickListener: OnExpenseClickListener) : Adapter<ExpensesListAdapter.ViewHolder>() {
 
     var items: MutableList<ExpenseModel> = ArrayList()
+
+    interface OnExpenseClickListener {
+        fun onExpenseClick(expenseModel: ExpenseModel)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val layoutInflater = LayoutInflater.from(parent?.context)
@@ -28,11 +32,8 @@ class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val item = items.get(position)
         val category = categoriesMap.get(item.category)
-        holder?.name?.setText(item.name)
-        holder?.category?.setText(item.category)
-        holder?.icon?.letter = item.category
-        holder?.icon?.shapeColor = if(category !=null) category.color else context.resources.getColor(R.color.gray)
-        holder?.value?.setText(item.value.toString())
+        (holder as ViewHolder).bind(item, category, context.resources.getColor(R.color.gray),
+                View.OnClickListener { view -> onExpenseClickListener.onExpenseClick(item)})
     }
 
     override fun getItemCount(): Int {
@@ -45,9 +46,14 @@ class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, 
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val icon = itemView.icon
-        val name = itemView.expense_name
-        val category = itemView.expense_category
-        val value = itemView.expense_value
+        fun bind(expenseModel: ExpenseModel, categoryModel: CategoryModel?, defaultColor: Int,
+                 onClickListener: View.OnClickListener) {
+            itemView.setOnClickListener(onClickListener)
+            itemView.expense_name.setText(expenseModel.name)
+            itemView.expense_category.setText(expenseModel.category)
+            itemView.icon.letter = expenseModel.category
+            itemView.icon.shapeColor = if(categoryModel !=null) categoryModel.color else defaultColor
+            itemView.expense_value.setText(expenseModel.value.toString())
+        }
     }
 }
