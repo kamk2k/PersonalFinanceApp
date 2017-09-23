@@ -1,7 +1,6 @@
 package com.corellidev.personalfinance.expenses
 
 import android.content.Context
-import kotlinx.android.synthetic.main.expense_list_item.view.*
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
@@ -9,16 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import com.corellidev.personalfinance.R
 import com.corellidev.personalfinance.categories.CategoryModel
+import kotlinx.android.synthetic.main.expense_list_item.view.*
 import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created by Kamil on 2017-06-20.
  */
 
 class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, CategoryModel>,
-                          val onExpenseClickListener: OnExpenseClickListener) : Adapter<ExpensesListAdapter.ViewHolder>() {
+                          val onExpenseClickListener: OnExpenseClickListener) : Adapter<ExpensesListAdapter.ViewHolder>()  {
 
     var items: MutableList<ExpenseModel> = ArrayList()
+    var deletedItems: HashMap<Int, ExpenseModel> = HashMap()
 
     interface OnExpenseClickListener {
         fun onExpenseClick(expenseModel: ExpenseModel)
@@ -38,6 +40,35 @@ class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, 
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    fun onItemSwiped(viewHolder: RecyclerView.ViewHolder) {
+        val position = viewHolder.adapterPosition
+        val item = items.get(position)
+        if(deletedItems.containsKey(position))
+            deletedItems.put(position + 1, item)
+        else
+            deletedItems.put(position, item)
+        removeFromDeletedItemsAfterDelay(position)
+        items.removeAt(position)
+        notifyItemRemoved(position)
+    }
+
+    private fun removeFromDeletedItemsAfterDelay(position: Int) {
+        val timer = Timer("deletedItems clear", true);
+        timer.schedule(object : TimerTask() {
+            override fun run() {
+                deletedItems.remove(position)
+            }
+        }, 3500)
+    }
+
+    fun onUndoDeleteClicked() {
+        deletedItems.forEach({
+            items.add(it.key, it.value)
+            notifyItemInserted(it.key)
+        })
+        deletedItems.clear()
     }
 
     fun setContent(newItems: MutableList<ExpenseModel>) {

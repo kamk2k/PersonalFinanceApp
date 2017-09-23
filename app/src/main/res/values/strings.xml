@@ -6,4 +6,5 @@
     <string name="title_activity_statistics">StatisticsActivity</string>
     <string name="month">Month</string>
     <string name="amount">Amount</string>
+    <string name="expense_deleted_message">%1s has been deleted</string>
 </resources>

@@ -3,9 +3,11 @@ package com.corellidev.personalfinance.expenses
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -79,6 +81,27 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AcceptClickLi
                     {
                         error -> Log.d(TAG, "getAllExpenses error " + error.toString())
                     })
+            val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or ItemTouchHelper.DOWN or ItemTouchHelper.UP) {
+                override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                    target: RecyclerView.ViewHolder): Boolean {
+                    return false
+                }
+
+                override fun getSwipeDirs(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
+                    return ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                    val snackbar = Snackbar.make(main_activity_coordinator_layout,
+                            String.format(getString(R.string.expense_deleted_message),
+                                    listAdapter.items.get(viewHolder.adapterPosition).name),
+                                Snackbar.LENGTH_LONG)
+                    listAdapter.onItemSwiped(viewHolder)
+                    snackbar.setAction("Undo", {listAdapter.onUndoDeleteClicked()})
+                    snackbar.show()
+                }
+            }
+            ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(this)
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
