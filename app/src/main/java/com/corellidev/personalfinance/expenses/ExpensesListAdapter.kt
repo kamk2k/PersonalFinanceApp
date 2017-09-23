@@ -17,13 +17,14 @@ import kotlin.collections.HashMap
  */
 
 class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, CategoryModel>,
-                          val onExpenseClickListener: OnExpenseClickListener) : Adapter<ExpensesListAdapter.ViewHolder>()  {
+                          val callback: Callback) : Adapter<ExpensesListAdapter.ViewHolder>()  {
 
     var items: MutableList<ExpenseModel> = ArrayList()
     var deletedItems: HashMap<Int, ExpenseModel> = HashMap()
 
-    interface OnExpenseClickListener {
+    interface Callback {
         fun onExpenseClick(expenseModel: ExpenseModel)
+        fun OnExpenseRemoved(expenseModel: ExpenseModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
@@ -35,7 +36,7 @@ class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, 
         val item = items.get(position)
         val category = categoriesMap.get(item.category)
         (holder as ViewHolder).bind(item, category, context.resources.getColor(R.color.gray),
-                View.OnClickListener { view -> onExpenseClickListener.onExpenseClick(item)})
+                View.OnClickListener { view -> callback.onExpenseClick(item)})
     }
 
     override fun getItemCount(): Int {
@@ -58,7 +59,8 @@ class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, 
         val timer = Timer("deletedItems clear", true);
         timer.schedule(object : TimerTask() {
             override fun run() {
-                deletedItems.remove(position)
+                val expenseModel = deletedItems.remove(position)
+                if(expenseModel != null) callback.OnExpenseRemoved(expenseModel)
             }
         }, 3500)
     }

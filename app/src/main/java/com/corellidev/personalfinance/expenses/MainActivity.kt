@@ -60,7 +60,10 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AcceptClickLi
             val categoriesMap = HashMap<String, CategoryModel>()
             categoriesRepository.getAllCategories().forEach({ item -> categoriesMap.put(item.name, item)})
             listAdapter = ExpensesListAdapter(this@MainActivity, categoriesMap,
-                    object : ExpensesListAdapter.OnExpenseClickListener{
+                    object : ExpensesListAdapter.Callback {
+                        override fun OnExpenseRemoved(expenseModel: ExpenseModel) {
+                            expensesRepository.deleteExpense(expenseModel)
+                        }
                         override fun onExpenseClick(expenseModel: ExpenseModel) {
                             val addExpenseDialogFragment = AddExpenseDialogFragment()
                             val bundle = Bundle()

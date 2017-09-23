@@ -1,9 +1,6 @@
 package com.corellidev.personalfinance.expenses
 
-import com.vicpin.krealmextensions.deleteAll
-import com.vicpin.krealmextensions.query
-import com.vicpin.krealmextensions.queryAll
-import com.vicpin.krealmextensions.save
+import com.vicpin.krealmextensions.*
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.realm.RealmObject
@@ -13,6 +10,7 @@ import java.util.*
 /**
  * Created by Kamil on 2017-06-22.
  */
+val ID_FIELD_NAME = "id"
 
 class ExpensesRepository {
     var expensesService: ExpenseServiceDelegate
@@ -22,7 +20,6 @@ class ExpensesRepository {
         this.expensesService = expensesService
     }
 
-    //TODO local storing
     var expenses: MutableList<ExpenseModel> = mutableListOf()
 
     fun getAllExpenses(): Single<List<ExpenseModel>> {
@@ -38,7 +35,7 @@ class ExpensesRepository {
 
     fun getExpense(id: String): Observable<ExpenseModel>{
         return Observable.just(ExpenseRealmModel()
-                .query { query -> query.equalTo("id", id) }
+                .query { query -> query.equalTo(ID_FIELD_NAME, id) }
                 .map { ExpenseModel(it.id, it.name, it.value, it.category, it.time) }
                 .first())
     }
@@ -58,6 +55,10 @@ class ExpensesRepository {
 //        expensesService.addExpense(token, addedExpense)
 //                .subscribeOn(Schedulers.io())
 //                .subscribe()
+    }
+
+    fun deleteExpense(expense: ExpenseModel) {
+        ExpenseRealmModel().delete { it.equalTo(ID_FIELD_NAME, expense.id) }
     }
 
     fun deleteAllExpenses() {
