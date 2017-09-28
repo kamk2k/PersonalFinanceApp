@@ -28,6 +28,7 @@ import kotlinx.android.synthetic.main.history_list_item.view.*
 import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormat
 import java.text.DecimalFormat
+import java.util.*
 import javax.inject.Inject
 
 
@@ -166,10 +167,11 @@ class HistoryAdapter(val context: Context):
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val dateFormat = DateTimeFormat.forPattern("MM.yyyy")
-        val valueFormat = DecimalFormat("#.00")
+        val valueFormat = DecimalFormat("0.00")
         fun bind(historyRecordModel: HistoryRecordModel) {
             itemView.date.text = DateTime(historyRecordModel.date).toString(dateFormat)
-            itemView.value.text = valueFormat.format(historyRecordModel.value)
+            itemView.value.text = valueFormat.format(historyRecordModel.value)  + " " +
+                    Currency.getInstance(Locale.getDefault()).symbol
         }
     }
 }

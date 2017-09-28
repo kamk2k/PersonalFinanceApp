@@ -9,7 +9,6 @@ import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,6 +56,18 @@ class AddExpenseDialogFragment : DialogFragment() {
         val categoriesNamesArrayList  = ArrayList<String>()
         var expenseId: String? = null
         var expenseTimestamp: Long? = null
+        valueInput.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable) {
+                val str = editable.toString()
+                val posDot = str.indexOf(".")
+                if (posDot <= 0) return
+                if (str.length - posDot - 1 > 2) {
+                    editable.delete(posDot + 3, posDot + 4)
+                }
+            }
+            override fun beforeTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3: Int) {}
+            override fun onTextChanged(arg0: CharSequence, arg1: Int, arg2: Int, arg3: Int) {}
+        })
         existingCategories.forEach({item -> categoriesNamesArrayList.add(item.name)})
         categorySpinner.adapter = CategoriesDialogAdapter(context, existingCategories)
         if(editMode) {

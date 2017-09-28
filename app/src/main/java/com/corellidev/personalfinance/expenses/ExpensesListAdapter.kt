@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.corellidev.personalfinance.R
 import com.corellidev.personalfinance.categories.CategoryModel
 import kotlinx.android.synthetic.main.expense_list_item.view.*
+import java.text.DecimalFormat
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -81,6 +82,7 @@ class ExpensesListAdapter(val context: Context, categoriesMap : Map<String, Cate
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val valueFormat = DecimalFormat("0.00")
         fun bind(expenseModel: ExpenseModel, categoryModel: CategoryModel?, defaultColor: Int,
                  onClickListener: View.OnClickListener) {
             itemView.setOnClickListener(onClickListener)
@@ -88,7 +90,8 @@ class ExpensesListAdapter(val context: Context, categoriesMap : Map<String, Cate
             itemView.expense_category.setText(expenseModel.category)
             itemView.icon.letter = expenseModel.category
             itemView.icon.shapeColor = if(categoryModel !=null) categoryModel.color else defaultColor
-            itemView.expense_value.setText(expenseModel.value.toString())
+            itemView.expense_value.setText(valueFormat.format(expenseModel.value) + " "
+                    + Currency.getInstance(Locale.getDefault()).symbol)
         }
     }
 }

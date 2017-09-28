@@ -29,7 +29,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Value"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/expense_name_input" />
