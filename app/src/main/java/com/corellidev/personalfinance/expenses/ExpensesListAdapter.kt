@@ -1,6 +1,7 @@
 package com.corellidev.personalfinance.expenses
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.Adapter
 import android.view.LayoutInflater
@@ -16,11 +17,12 @@ import kotlin.collections.HashMap
  * Created by Kamil on 2017-06-20.
  */
 
-class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, CategoryModel>,
+class ExpensesListAdapter(val context: Context, categoriesMap : Map<String, CategoryModel>,
                           val callback: Callback) : Adapter<ExpensesListAdapter.ViewHolder>()  {
 
     var items: MutableList<ExpenseModel> = ArrayList()
     var deletedItems: HashMap<Int, ExpenseModel> = HashMap()
+    var categoriesMap: Map<String, CategoryModel> = categoriesMap
 
     interface Callback {
         fun onExpenseClick(expenseModel: ExpenseModel)
@@ -35,7 +37,7 @@ class ExpensesListAdapter(val context: Context, val categoriesMap : Map<String, 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
         val item = items.get(position)
         val category = categoriesMap.get(item.category)
-        (holder as ViewHolder).bind(item, category, context.resources.getColor(R.color.gray),
+        (holder as ViewHolder).bind(item, category, Color.GRAY,
                 View.OnClickListener { view -> callback.onExpenseClick(item)})
     }
 

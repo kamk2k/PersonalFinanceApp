@@ -1,10 +1,10 @@
 package com.corellidev.personalfinance.categories
 
+import android.content.Context
 import android.support.annotation.ColorInt
-import com.vicpin.krealmextensions.delete
-import com.vicpin.krealmextensions.deleteAll
-import com.vicpin.krealmextensions.queryAll
-import com.vicpin.krealmextensions.save
+import com.corellidev.personalfinance.R
+import com.corellidev.personalfinance.expenses.ExpenseRealmModel
+import com.vicpin.krealmextensions.*
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import javax.inject.Inject
@@ -17,10 +17,13 @@ val NAME_FIELD_NAME = "name"
 val COLOR_FIELD_NAME = "color"
 
 @Singleton
-class CategoriesRepository @Inject constructor(){
+class CategoriesRepository @Inject constructor(val context: Context){
+
+    var modified = false
 
     fun addCategory(category: CategoryModel) {
         CategoryRealmModel(category.name, category.color).save()
+        modified = true
     }
 
     //TODO could be changed to return observable (requires changes in CategoriesAdapter)
@@ -33,11 +36,24 @@ class CategoriesRepository @Inject constructor(){
     }
 
     fun deleteCategory(categoryModel: CategoryModel) {
+        ExpenseRealmModel()
+                .query { it.equalTo("category", categoryModel.name) }
+                .forEach{
+                    it.category = context.getString(R.string.none_category_name)
+                    it.save()
+                }
         CategoryRealmModel().delete { query -> query.equalTo(NAME_FIELD_NAME, categoryModel.name) }
+        modified = true
     }
 
     fun deleteAllCategoires() {
         CategoryRealmModel().deleteAll()
+        modified= true
+    }
+
+    fun checkIfModified(): Boolean {
+        modified = !modified
+        return !modified
     }
 }
 

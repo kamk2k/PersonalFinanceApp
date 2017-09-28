@@ -98,7 +98,7 @@ class CategoriesActivityAdapter(val context: Context, val items: MutableList<Cat
     }
 
     override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-        (holder as ViewHolder).bind(items.get(position))
+        (holder as ViewHolder).bind(items.get(position), context)
     }
 
     override fun getItemCount(): Int {
@@ -106,14 +106,17 @@ class CategoriesActivityAdapter(val context: Context, val items: MutableList<Cat
     }
 
     class ViewHolder(itemView: View, val onClickListener: OnClickListener?) : RecyclerView.ViewHolder(itemView) {
-        fun bind(categoryModel: CategoryModel) {
+        fun bind(categoryModel: CategoryModel, context : Context) {
             with(categoryModel) {
                 itemView.category_icon.letter = name
                 itemView.category_icon.shapeColor = color
                 itemView.category_title.setText(name)
-                itemView.remove_category_button.setOnClickListener({
-                    onClickListener?.onDeleteClick(this)
-                })
+                if(name.equals(context.getString(R.string.none_category_name)))
+                    itemView.remove_category_button.visibility = View.GONE
+                else
+                    itemView.remove_category_button.setOnClickListener({
+                        onClickListener?.onDeleteClick(this)
+                    })
             }
         }
     }

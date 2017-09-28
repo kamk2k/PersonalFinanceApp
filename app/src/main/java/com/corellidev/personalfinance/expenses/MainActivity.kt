@@ -124,8 +124,27 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AcceptClickLi
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        if(categoriesRepository.checkIfModified()) {
+            val categoriesMap = HashMap<String, CategoryModel>()
+            categoriesRepository.getAllCategories().forEach({ item -> categoriesMap.put(item.name, item)})
+            listAdapter.categoriesMap = categoriesMap
+            expensesRepository.getAllExpenses()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            {
+                                expenses -> listAdapter.setContent(expenses.toMutableList())
+                            },
+                            {
+                                error -> Log.d(TAG, "getAllExpenses error " + error.toString())
+                            })
+        }
+    }
+
     private fun fillDatabases() {
-        categoriesRepository.deleteAllCategoires()
+//        categoriesRepository.deleteAllCategoires()
         categoriesRepository.addCategory(CategoryModel("Food", Color.BLUE))
         categoriesRepository.addCategory(CategoryModel("Car", Color.RED))
         categoriesRepository.addCategory(CategoryModel("Bills", Color.GREEN))
