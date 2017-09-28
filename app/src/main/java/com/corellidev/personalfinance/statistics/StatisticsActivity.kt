@@ -131,7 +131,7 @@ class StatisticsActivity : AppCompatActivity() {
         return expensesRepository.getAllExpenses().subscribe({ expenses ->
             val historyRecordsList = ArrayList<HistoryRecordModel>()
             expenses
-                    .sortedBy { it.time }
+                    .sortedByDescending { it.time }
                     .groupBy({
                         DateTime(it.time).year().get() * 100 + DateTime(it.time).monthOfYear().get()
                     })
