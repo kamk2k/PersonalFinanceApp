@@ -174,7 +174,8 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AcceptClickLi
 
     override fun onAddClick(expense: ExpenseModel) {
         val updatedId = expensesRepository.addExpense(expense)
-        listAdapter.items.add(ExpenseModel(updatedId, expense.name, expense.value, expense.category, expense.time))
+        listAdapter.items.add(0, ExpenseModel(updatedId, expense.name, expense.value, expense.category, expense.time))
+        listAdapter.notifyItemInserted(0)
     }
 
     override fun onEditAcceptClick(expense: ExpenseModel) {
