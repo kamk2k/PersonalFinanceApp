@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">PersonalFinance</string>
+    <string name="app_name">Personal Finance</string>
     <string name="action_settings">Settings</string>
     <string name="action_categories">Categories</string>
     <string name="action_statistics">Statistics</string>
-    <string name="title_activity_statistics">StatisticsActivity</string>
     <string name="month">Month</string>
     <string name="amount">Amount</string>
     <string name="expense_deleted_message">%1s has been deleted</string>
