@@ -91,8 +91,8 @@ class AddExpenseDialogFragment : DialogFragment() {
                 newCategoryInput.visibility = View.GONE
             }
         }
-        val titleText = if(editMode) "Edit expense" else "Add new expense"
-        val positiveButtonText = if(editMode) "Accept" else "Add"
+        val titleText = if(editMode) getString(R.string.edit_expense) else getString(R.string.add_new_expense)
+        val positiveButtonText = if(editMode) getString(R.string.accept) else getString(R.string.add)
         val dialog = AlertDialog.Builder(activity)
                 .setTitle(titleText)
                 .setView(view)
@@ -115,7 +115,7 @@ class AddExpenseDialogFragment : DialogFragment() {
                                 ExpenseModel(BLANK_ID, name, value.toDouble(), categoryName, Date().time))
                     }
                 }
-                .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
+                .setNegativeButton(getString(R.string.cancel)) { dialogInterface: DialogInterface, i: Int ->
                     dialogInterface.cancel()
                 }
                 .create()

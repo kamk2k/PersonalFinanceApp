@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity(), AddExpenseDialogFragment.AcceptClickLi
                                     listAdapter.items.get(viewHolder.adapterPosition).name),
                                 Snackbar.LENGTH_LONG)
                     listAdapter.onItemSwiped(viewHolder)
-                    snackbar.setAction("Undo", {listAdapter.onUndoDeleteClicked()})
+                    snackbar.setAction(context.getString(R.string.undo), {listAdapter.onUndoDeleteClicked()})
                     snackbar.show()
                 }
             }

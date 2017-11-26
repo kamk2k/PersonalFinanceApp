@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PersonalFinance</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="action_categories">Kategorie</string>
+    <string name="action_statistics">Statystyki</string>
+    <string name="month">Miesiąc</string>
+    <string name="amount">Kwota</string>
+    <string name="expense_deleted_message">%1s zistał usunięty</string>
+    <string name="none_category_name">Brak</string>
+    <string name="undo">Cofnij</string>
+    <string name="edit_expense">Zmień</string>
+    <string name="add_new_expense">Dodaj nowy wydatek</string>
+    <string name="add">Dodaj</string>
+    <string name="accept">Akceptuj</string>
+    <string name="cancel">Anuluj</string>
+    <string name="add_new_category">Dodaj nową kategorię</string>
+    <string name="name">Nazwa</string>
+    <string name="value">Wartość</string>
+    <string name="category">Kategoria</string>
+    <string name="category_name">Nazwa kategorii</string>
+</resources>

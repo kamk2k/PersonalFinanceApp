@@ -135,14 +135,14 @@ class AddCategoryDialogFragment : DialogFragment() {
         val nameInput = view.category_name_input
         val categoriesNames = arguments.getStringArrayList(CATEGORIES_NAMES_LIST_KEY)
         val dialog = AlertDialog.Builder(activity)
-                .setTitle("Add new category")
+                .setTitle(getString(R.string.add_new_category))
                 .setView(view)
-                .setPositiveButton("Add") { dialogInterface: DialogInterface, i: Int ->
+                .setPositiveButton(getString(R.string.add)) { dialogInterface: DialogInterface, i: Int ->
                     val name = nameInput.text.toString()
                     val newCategory = CategoryModel(name, CategoryModel.getNextColor(context))
                     addClickListener?.onAddClick(newCategory)
                 }
-                .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
+                .setNegativeButton(getString(R.string.cancel)) { dialogInterface: DialogInterface, i: Int ->
                     dialogInterface.cancel()
                 }
                 .create()

@@ -21,7 +21,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:paddingLeft="4dp"
-        android:text="Add new category"
+        android:text="@string/add_new_category"
         android:textColor="@android:color/black"
         android:textSize="24dp" />
 

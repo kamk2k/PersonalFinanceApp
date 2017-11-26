@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:hint="Category name"
+        android:hint="@string/category_name"
         android:maxEms="20"/>
 
 </android.support.constraint.ConstraintLayout>
